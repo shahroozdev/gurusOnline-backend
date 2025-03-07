@@ -45,7 +45,7 @@ async function bootstrap() {
   );
   // Swagger Configuration
   const config = new DocumentBuilder()
-    .setTitle('Fixfinaz API')
+    .setTitle('Gurus Online Learning API')
     .setDescription('API documentation for my NestJS app')
     .setVersion('1.0')
     .addBearerAuth() // If you have authentication
