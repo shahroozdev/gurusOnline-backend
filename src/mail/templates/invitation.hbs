@@ -1,0 +1,17 @@
+<p>Hey {{name}},</p>
+<p>Welcome to FB. {{name2}} has invited you to join as a {{role}}.</p>
+<p><b>Login Detail:</b></p>
+<ul>
+    <li><b>Email</b>{{email}}</li>
+    <li><b>password</b>{{password}}</li>
+</ul>
+<p>Please click the link below to verify your registration:</p>
+<p>
+    <!-- Anchor tag redirects to login, button onclick calls the API in the background -->
+    <a href={{url}} style="display: block; width: 100%; text-align: center; padding-top: 30px; padding-bottom: 30px;">
+        <button type="button" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #4ca952; text-decoration: none; border: none; border-radius: 5px;">
+            Confirm
+        </button>
+    </a>
+</p>
+<p>If you did not request this email, you can safely ignore it.</p>
