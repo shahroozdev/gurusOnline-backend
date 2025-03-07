@@ -1,5 +1,6 @@
 export const rolesList = [
-  { name: 'user' },
-  { name: 'advisor' },
+  { name: 'student' },
+  { name: 'teacher' },
+  { name: 'manager' },
   { name: 'admin' },
 ];

@@ -57,23 +57,11 @@ export class AuthService {
     const newUser = await this.Prisma.user.create({
       data: {
         email: dto.email,
+        username: dto.username,
         hash,
         role: {
           connect: { id: dto.roleId||1 },
         },
-        profile: {
-          create: {
-            dob:dto.dob,
-            firstName: dto.firstName,
-            lastName: dto.lastName,
-            address:dto.address,
-            city:dto.city,
-            state:dto.state,
-            gender:dto.gender,
-            zip:dto.zip,
-            sign: dto.sign,
-          },
-      }
     }
     });
 
@@ -125,98 +113,98 @@ export class AuthService {
       message: 'Sign-in successful.',
     };
   }
-  async googleSignIn(token: string): Promise<{
-    user?: any;
-    accessToken?: string;
-    message: string;
-    status: number;
-  }> {
-    // Verify Google Token
-    const ticket = await this.client.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID?.trim(),
-    });
-    if (!ticket) {
-      throw new UnauthorizedException('Token verification failed');
-    }
+  // async googleSignIn(token: string): Promise<{
+  //   user?: any;
+  //   accessToken?: string;
+  //   message: string;
+  //   status: number;
+  // }> {
+  //   // Verify Google Token
+  //   const ticket = await this.client.verifyIdToken({
+  //     idToken: token,
+  //     audience: process.env.GOOGLE_CLIENT_ID?.trim(),
+  //   });
+  //   if (!ticket) {
+  //     throw new UnauthorizedException('Token verification failed');
+  //   }
 
-    const payload = ticket.getPayload();
-    if (!payload) {
-      throw new UnauthorizedException('Invalid token payload');
-    }
+  //   const payload = ticket.getPayload();
+  //   if (!payload) {
+  //     throw new UnauthorizedException('Invalid token payload');
+  //   }
 
-    const { email, family_name, given_name, picture, sub } = payload;
+  //   const { email, family_name, given_name, picture, sub } = payload;
 
-    let user = await this.Prisma.user.findUnique({
-      where: {
-        email,
-      },
-      include: {
-        role: {
-          select: {
-            name: true,
-            permissions: true,
-          },
-        },
-        profile: true,
-      },
-    });
-    if (!user) {
-      user = await this.Prisma.user.findUnique({
-        where: {
-          email,
-        },
-        include: {
-          role: {
-            select: {
-              name: true,
-              permissions: true,
-            },
-          },
-          profile: true,
-        },
-      });
-    }
+  //   let user = await this.Prisma.user.findUnique({
+  //     where: {
+  //       email,
+  //     },
+  //     include: {
+  //       role: {
+  //         select: {
+  //           name: true,
+  //           permissions: true,
+  //         },
+  //       },
+  //       profile: true,
+  //     },
+  //   });
+  //   if (!user) {
+  //     user = await this.Prisma.user.findUnique({
+  //       where: {
+  //         email,
+  //       },
+  //       include: {
+  //         role: {
+  //           select: {
+  //             name: true,
+  //             permissions: true,
+  //           },
+  //         },
+  //         profile: true,
+  //       },
+  //     });
+  //   }
 
-    // If user does not exist, create a new one
-    if (!user) {
-      user = await this.Prisma.user.create({
-        data: {
-          email,
-          googleId: sub,
-          profile: {
-            create: {
-              firstName: given_name,
-              lastName: family_name,
-              avatar: picture,
-            },
-          },
-          role: {
-            connect: { id: 1 },
-          },
-          status: true, // Automatically verify email since it's from Google
-        },
-        include: {
-          profile: true,
-          role: {
-            select: {
-              name: true,
-              permissions: true,
-            },
-          },
-        },
-      });
-    }
+  //   // If user does not exist, create a new one
+  //   if (!user) {
+  //     user = await this.Prisma.user.create({
+  //       data: {
+  //         email,
+  //         googleId: sub,
+  //         status: true, // Automatically verify email since it's from Google
+  //         profile: {
+  //           create: {
+  //             firstName: given_name,
+  //             lastName: family_name,
+  //             avatar: picture,
+  //           },
+  //         },
+  //         role: {
+  //           connect: { id: 1 },
+  //         },
+  //       },
+  //       include: {
+  //         profile: true,
+  //         role: {
+  //           select: {
+  //             name: true,
+  //             permissions: true,
+  //           },
+  //         },
+  //       },
+  //     });
+  //   }
 
-    // Generate JWT token
-    const accessToken = await this.getToken(user.id, user.email);
-    return {
-      status: 200,
-      user,
-      accessToken,
-      message: 'Google sign-in successful.',
-    };
-  }
+  //   // Generate JWT token
+  //   const accessToken = await this.getToken(user.id, user.email);
+  //   return {
+  //     status: 200,
+  //     user,
+  //     accessToken,
+  //     message: 'Google sign-in successful.',
+  //   };
+  // }
   async getMe(id: number): Promise<any> {
     const user = await this.Prisma.user.findUnique({
       where: { id },

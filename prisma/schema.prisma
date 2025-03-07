@@ -20,7 +20,7 @@ model User {
   deleted_at DateTime?
 
   email    String  @unique
-  username    String  @unique
+  username    String?  @unique
   hash     String
   status   Boolean @default(false)
   googleId String? @unique

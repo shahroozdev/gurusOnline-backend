@@ -2,10 +2,11 @@
   "name": "gurusOnline-backend",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "M SH@HR00Z",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "seed": "ts-node src/prisma/seed.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

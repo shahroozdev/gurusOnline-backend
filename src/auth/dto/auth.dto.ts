@@ -18,43 +18,11 @@ export class AuthSignUpDto {
 
   @IsNotEmpty()
   @IsString()
-  firstName: string;
-
-  @IsNotEmpty()
-  @IsString()
-  lastName: string;
-
-  @IsNotEmpty()
-  @IsString()
-  sign: string;
-
-  @IsNotEmpty()
-  @IsString()
-  state: string;
-
-  @IsNotEmpty()
-  @IsString()
-  city: string;
-
-  @IsNotEmpty()
-  @IsString()
-  zip: string;
-
-  @IsNotEmpty()
-  @IsString()
-  gender: string;
-
-  @IsNotEmpty()
-  @IsString()
-  address: string;
+  username: string;
 
   @IsNotEmpty()
   @IsNumber()
   roleId: number;
-
-  @IsNotEmpty()
-  @IsDateString()
-  dob: string;
 
   @IsNotEmpty()
   @IsString()

@@ -49,18 +49,18 @@ export class AuthController {
   }> {
     return apiWrapper(() => this.AuthService.signIn(dto));
   }
-  @Public()
-  @Post('/google-signIn')
-  @HttpCode(200)
-  // @ApiCustomResponse('signIn')
-  googleSignIn(@Body('token') token: string): Promise<{
-    user?: any;
-    accessToken?: string;
-    message?: string;
-    status: number;
-  }> {
-    return apiWrapper(() => this.AuthService.googleSignIn(token));
-  }
+  // @Public()
+  // @Post('/google-signIn')
+  // @HttpCode(200)
+  // // @ApiCustomResponse('signIn')
+  // googleSignIn(@Body('token') token: string): Promise<{
+  //   user?: any;
+  //   accessToken?: string;
+  //   message?: string;
+  //   status: number;
+  // }> {
+  //   return apiWrapper(() => this.AuthService.googleSignIn(token));
+  // }
 
   @Post('/changePassword')
   @HttpCode(200)
