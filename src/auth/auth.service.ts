@@ -67,8 +67,7 @@ export class AuthService {
 
     await this.MailService.sendUserConfirmation(newUser);
     const { hash: pass, ...rest } = newUser;
-    const accessToken = await this.getToken(newUser.id, newUser.email);
-    return { status: 200,accessToken, user:rest, message: 'User created successfully.' };
+    return { status: 200, user:rest, message: 'User created successfully. Please verify your email before logging in.' };
   }
   async signIn(dto: AuthSignInDto): Promise<{
     user?: any;

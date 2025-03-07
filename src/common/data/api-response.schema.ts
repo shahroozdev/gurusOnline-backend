@@ -101,28 +101,16 @@ export const ApiSchemas = {
     body: {
       type: 'object',
       properties: {
-        firstName: { type: 'string', example: 'John' },
-        lastName: { type: 'string', example: 'Doe' },
-        dob: { type: 'string', format: 'date', example: '1995-08-15' },
-        gender: {
-          type: 'string',
-          enum: ['Male', 'Female', 'Other'],
-          example: 'Male',
-        },
+        username: { type: 'string', example: 'John' },
         email: { type: 'string', example: 'johndoe@example.com' },
         password: { type: 'string', example: 'StrongPass@123' },
         roleId: {
           type: 'number',
           example: 1,
-          description: '1 = User, 2 = Advisor',
+          description: '1 = User, 2 = Teacher, 3= Manager, 4 = Admin',
         }, // Optional role ID
-        address: { type: 'string', example: '123 Main St' },
-        city: { type: 'string', example: 'New York' },
-        state: { type: 'string', example: 'NY' },
-        zip: { type: 'string', example: '10001' },
-        sign: { type: 'string', example: 'User Signature' },
       },
-      required: ['firstName', 'lastName', 'dob', 'gender', 'email', 'password'],
+      required: ['username', 'email', 'password'],
     },
   
     responsesArr: [
@@ -133,19 +121,12 @@ export const ApiSchemas = {
           'application/json': {
             example: {
               status: 200,
-              message: 'User created successfully.',
-              accessToken: 'eyJhbGciOiJIUzI1N...',  // JWT Token
+              message: 'User created successfully. Please verify your email before logging in.',
               user: {
                 id: 1,
                 email: 'johndoe@example.com',
-                firstName: 'John',
-                lastName: 'Doe',
-                dob: '1995-08-15',
-                gender: 'Male',
-                address: '123 Main St',
-                city: 'New York',
-                state: 'NY',
-                zip: '10001',
+                username: 'John',
+                status:false,
                 role: {
                   id: 1,
                   name: 'User',
