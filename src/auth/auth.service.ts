@@ -12,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import {
   AuthSignInDto,
   AuthSignUpDto,
+  AuthUsername,
   ChangePassword,
   CreatePasswordDto,
 } from './dto';
@@ -44,6 +45,20 @@ export class AuthService {
   }
 
   //services
+  async verifyUniqueUsername(
+    dto: AuthUsername,
+  ): Promise<{ status: number; message: string }> {
+    // Find the user by email
+    const findUser = await this.Prisma.user.findUnique({
+      where: {
+        username: dto.username,
+      },
+    });
+    if (!findUser) {
+      return { status: 200, message: 'Username is available.' };
+    }
+    return { status: 200, message: 'Username already exists.' };
+  }
   async signUp(dto: AuthSignUpDto): Promise<response & {user?:any, accessToken?:string}> {
     const hash: string = await this.hashData(dto.password);
     const existingEmail = await this.Prisma.user.findUnique({
@@ -53,7 +68,7 @@ export class AuthService {
     if (existingEmail) {
       throw new ConflictException('Email already exists.');
     }
-
+    await this.verifyUniqueUsername({username:dto.username})
     const newUser = await this.Prisma.user.create({
       data: {
         email: dto.email,

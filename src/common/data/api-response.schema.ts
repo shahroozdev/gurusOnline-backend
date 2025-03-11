@@ -97,7 +97,7 @@ export const ApiSchemas = {
   },
   signUp: {
     summary: 'User Registration',
-    
+
     body: {
       type: 'object',
       properties: {
@@ -112,7 +112,7 @@ export const ApiSchemas = {
       },
       required: ['username', 'email', 'password'],
     },
-  
+
     responsesArr: [
       {
         status: 200,
@@ -121,12 +121,13 @@ export const ApiSchemas = {
           'application/json': {
             example: {
               status: 200,
-              message: 'User created successfully. Please verify your email before logging in.',
+              message:
+                'User created successfully. Please verify your email before logging in.',
               user: {
                 id: 1,
                 email: 'johndoe@example.com',
                 username: 'John',
-                status:false,
+                status: false,
                 role: {
                   id: 1,
                   name: 'User',
@@ -162,7 +163,8 @@ export const ApiSchemas = {
                 summary: 'Missing Required Fields',
                 value: {
                   status: 400,
-                  message: 'firstName, lastName, email, and password are required.',
+                  message:
+                    'firstName, lastName, email, and password are required.',
                 },
               },
             },
@@ -170,7 +172,7 @@ export const ApiSchemas = {
         },
       },
     ],
-  },  
+  },
   forgetPasswordSendEmail: {
     summary: 'Forgot Password - Send Reset Email',
 
