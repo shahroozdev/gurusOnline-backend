@@ -3,7 +3,6 @@ import {
   ConflictException,
   Inject,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
@@ -59,7 +58,9 @@ export class AuthService {
     }
     return { status: 200, message: 'Username already exists.' };
   }
-  async signUp(dto: AuthSignUpDto): Promise<response & {user?:any, accessToken?:string}> {
+  async signUp(
+    dto: AuthSignUpDto,
+  ): Promise<response & { user?: any; accessToken?: string }> {
     const hash: string = await this.hashData(dto.password);
     const existingEmail = await this.Prisma.user.findUnique({
       where: { email: dto.email },
@@ -68,21 +69,26 @@ export class AuthService {
     if (existingEmail) {
       throw new ConflictException('Email already exists.');
     }
-    await this.verifyUniqueUsername({username:dto.username})
+    await this.verifyUniqueUsername({ username: dto.username });
     const newUser = await this.Prisma.user.create({
       data: {
         email: dto.email,
         username: dto.username,
         hash,
         role: {
-          connect: { id: dto.roleId||1 },
+          connect: { id: dto.roleId || 1 },
         },
-    }
+      },
     });
 
     await this.MailService.sendUserConfirmation(newUser);
     const { hash: pass, ...rest } = newUser;
-    return { status: 200, user:rest, message: 'User created successfully. Please verify your email before logging in.' };
+    return {
+      status: 200,
+      user: rest,
+      message:
+        'User created successfully. Please verify your email before logging in.',
+    };
   }
   async signIn(dto: AuthSignInDto): Promise<{
     user?: any;

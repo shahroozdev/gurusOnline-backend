@@ -20,14 +20,16 @@ model User {
   deleted_at DateTime?
 
   email    String  @unique
-  username    String?  @unique
+  username String? @unique
   hash     String
   status   Boolean @default(false)
   googleId String? @unique
 
-  roleId  Int
-  role    Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  profile Profile?
+  roleId             Int
+  role               Role               @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  profile            Profile?
+  taughtCourses      CourseTeacher[]    @relation("teachingAssignments")
+  studentEnrollments CourseEnrollment[] @relation("studentEnrollments")
 
   @@map("users")
 }
@@ -70,7 +72,61 @@ model Profile {
   education      String?
 
   userId Int  @unique
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("profile")
+}
+
+model Course {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  
+  title     String    @unique
+  slug      String    @unique
+  desc      String
+  image     String
+
+  teachers    CourseTeacher[]
+  enrollments CourseEnrollment[]
+
+  @@map("courses")
+}
+
+model CourseTeacher {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  teacherId  Int       @map("teacher_id")
+  courseId   Int       @map("course_id")
+
+  teacher     User               @relation("teachingAssignments", fields: [teacherId], references: [id], onDelete: Cascade)
+  course      Course             @relation(fields: [courseId], references: [id])
+  enrollments CourseEnrollment[] @relation("teacherEnrollments")
+
+  @@unique([teacherId, courseId])
+  @@map("course_teachers")
+}
+
+model CourseEnrollment {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  studentId  Int       @map("student_id")
+  courseId   Int       @map("course_id")
+  teacherId  Int       @map("teacher_id")
+
+  // Relations
+  student User          @relation("studentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course        @relation(fields: [courseId], references: [id])
+  teacher CourseTeacher @relation("teacherEnrollments", fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseId])
+  @@index([teacherId, courseId])
+  @@map("course_enrollments")
 }
