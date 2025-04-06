@@ -82,16 +82,35 @@ model Course {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
-  
-  title     String    @unique
-  slug      String    @unique
-  desc      String
-  image     String
+
+  title String @unique
+  slug  String @unique
+  desc  String
+  image String
 
   teachers    CourseTeacher[]
   enrollments CourseEnrollment[]
 
   @@map("courses")
+}
+
+model Session {
+  id           Int       @id @default(autoincrement())
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  startDate    DateTime
+  endDate      DateTime
+  materials    String[]  // URLs to materials (images/docs)
+  meetingUrl   String?   // Optional MS Teams meeting link
+  isCompleted  Boolean   @default(false)
+
+  // Relations
+  enrollment   CourseEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  enrollmentId Int
+
+  @@map("sessions")
 }
 
 model CourseTeacher {
@@ -100,12 +119,13 @@ model CourseTeacher {
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
-  teacherId  Int       @map("teacher_id")
-  courseId   Int       @map("course_id")
+  teacherId Int @map("teacher_id")
+  courseId  Int @map("course_id")
 
   teacher     User               @relation("teachingAssignments", fields: [teacherId], references: [id], onDelete: Cascade)
   course      Course             @relation(fields: [courseId], references: [id])
   enrollments CourseEnrollment[] @relation("teacherEnrollments")
+  sessionId   Int?
 
   @@unique([teacherId, courseId])
   @@map("course_teachers")
@@ -117,14 +137,16 @@ model CourseEnrollment {
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
-  studentId  Int       @map("student_id")
-  courseId   Int       @map("course_id")
-  teacherId  Int       @map("teacher_id")
+  studentId Int @map("student_id")
+  courseId  Int @map("course_id")
+  teacherId Int @map("teacher_id")
 
   // Relations
-  student User          @relation("studentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)
-  course  Course        @relation(fields: [courseId], references: [id])
-  teacher CourseTeacher @relation("teacherEnrollments", fields: [teacherId], references: [id], onDelete: Cascade)
+  student   User          @relation("studentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)
+  course    Course        @relation(fields: [courseId], references: [id])
+  teacher   CourseTeacher @relation("teacherEnrollments", fields: [teacherId], references: [id], onDelete: Cascade)
+  sessions  Session[] 
+  sessionId Int?
 
   @@unique([studentId, courseId])
   @@index([teacherId, courseId])
