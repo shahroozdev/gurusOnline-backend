@@ -11,12 +11,21 @@ export class StudentController {
     constructor(private StudentService: StudentService) {}
 
       @Public()
-      @Get('/courses/:id?')
+      @Get('/course/:id')
       @HttpCode(200)
-     getCourses(@Param('id') id?: string, @Query() query?: Record<string, string>) {
+     getCourse(@Param('id') id: string, @Query() query?: Record<string, string>) {
+  return apiWrapper(() =>
+    this.StudentService.getCourse({
+      id,
+      filters: query, // Passing all query parameters dynamically
+    })
+  )}
+      @Public()
+      @Get('/courses')
+      @HttpCode(200)
+     getCourses(@Query() query?: Record<string, string>) {
   return apiWrapper(() =>
     this.StudentService.getCourses({
-      id,
       filters: query, // Passing all query parameters dynamically
     })
   )}
