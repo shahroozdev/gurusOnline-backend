@@ -35,6 +35,12 @@ export class StudentService {
       
         return { status: 200, message: 'Course fetched successfully.', course };
       }
+    async createCourse(dto:any):Promise<response>{
+        return
+    }
+    async registerStudent(dto:any):Promise<response>{
+        return
+    }
     async registerLead(dto:RegisterLeadDto):Promise<response>{
         return {status:200, message:'hello'}
     }

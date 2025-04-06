@@ -10,7 +10,7 @@ import { apiWrapper } from 'src/common/globalErrorHandlerClass';
 export class StudentController {
     constructor(private StudentService: StudentService) {}
 
-      @Public()
+
       @Get('/course/:id')
       @HttpCode(200)
      getCourse(@Param('id') id: string, @Query() query?: Record<string, string>) {
@@ -29,6 +29,15 @@ export class StudentController {
       filters: query, // Passing all query parameters dynamically
     })
   )}
+      @Public()
+      @Post('/courses')
+      @HttpCode(200)
+     createCourse(@Query() query?: Record<string, string>) {
+  return apiWrapper(() =>
+    this.StudentService.createCourse({
+      filters: query, // Passing all query parameters dynamically
+    })
+  )}
 
       @Public()
       @Post('/registerLead')
@@ -39,4 +48,13 @@ export class StudentController {
       ): Promise<{ user?: any; message?: string; status: number }> {
         return apiWrapper(() => this.StudentService.registerLead(dto));
       }
+
+      @Post('/register')
+      @HttpCode(200)
+      registerStudent(
+        @Body() dto: RegisterLeadDto,
+      ): Promise<{ user?: any; message?: string; status: number }> {
+        return apiWrapper(() => this.StudentService.registerStudent(dto));
+      }
+      
 }
