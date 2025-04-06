@@ -41,6 +41,20 @@ export class StudentService {
     async registerStudent(dto:any):Promise<response>{
         return
     }
+    async allStudents():Promise<response & {students?:any}>{
+        const students = await this.Prisma.user.findMany({where:{roleId:1}});
+        if(!students){
+            return {status:404, message:'Students not found'}
+        }
+        return {status:200, message:'All Students List', students}
+    }
+    async studentById(id:number):Promise<response & {students?:any}>{
+        const students = await this.Prisma.user.findUnique({where:{id}});
+        if(!students){
+            return {status:404, message:'Student not found'}
+        }
+        return {status:200, message:'Students fetch successfully', students}
+    }
     async registerLead(dto:RegisterLeadDto):Promise<response>{
         return {status:200, message:'hello'}
     }

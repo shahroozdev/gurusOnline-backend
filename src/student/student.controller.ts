@@ -56,5 +56,16 @@ export class StudentController {
       ): Promise<{ user?: any; message?: string; status: number }> {
         return apiWrapper(() => this.StudentService.registerStudent(dto));
       }
+
+      @Get('/students')
+      @HttpCode(200)
+      allStudents(): Promise<{ students?: any; message?: string; status: number }> {
+        return apiWrapper( ()=> this.StudentService.allStudents())
+      }
+      @Get('/students/:id')
+      @HttpCode(200)
+      studentById(@Param('id') id:string): Promise<{ student?: any; message?: string; status: number }> {
+        return apiWrapper( ()=> this.StudentService.studentById(Number(id)))
+      }
       
 }
