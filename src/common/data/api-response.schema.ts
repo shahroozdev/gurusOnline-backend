@@ -491,4 +491,315 @@ export const ApiSchemas = {
       },
     ],
   },
+  registerLead: {
+    summary: 'Register a new lead',
+    requestBody: {
+      required: true,
+      content: {
+        'application/json': {
+          example: {
+            fullName: 'Ahmed Ali',
+            country: 'Pakistan',
+            email: 'ahmed.ali@example.com',
+            teamId: 'TEAM123',
+            phoneNumber: '+923001234567',
+            residenceNumber: '021-1234567',
+            preferedTime: 'e.g Wed 2-3, Thur 3-4',
+            purpose: 'Interested in course enrollment',
+          },
+        },
+      },
+    },
+    responsesArr: [
+      {
+        status: 201,
+        description: 'Lead registered successfully',
+        content: {
+          'application/json': {
+            example: {
+              status: 201,
+              message: 'Lead registered successfully',
+            },
+          },
+        },
+      },
+      {
+        status: 409,
+        description:
+          'Unique constraint violation (email or teamId already exists)',
+        content: {
+          'application/json': {
+            example: {
+              status: 409,
+              message:
+                'A unique constraint violation occurred on field(s): email. Please check your input and try again.',
+            },
+          },
+        },
+      },
+      {
+        status: 500,
+        description: 'Internal Server Error',
+        content: {
+          'application/json': {
+            example: {
+              status: 500,
+              message:
+                'An error occurred. Please try again. Error: [error message]',
+            },
+          },
+        },
+      },
+    ],
+  },
+  allLeads: {
+    summary: 'Get All Student Leads',
+    responsesArr: [
+      {
+        status: 200,
+        description: 'Successfully retrieved all student leads',
+        content: {
+          'application/json': {
+            example: {
+              status: 200,
+              message: 'All Students Leads List',
+              students: [
+                {
+                  id: 1,
+                  fullName: 'Ahmed Ali',
+                  country: 'Pakistan',
+                  email: 'ahmed.ali@example.com',
+                  teamId: 'TEAM123',
+                  phoneNumber: '+923001234567',
+                  residenceNumber: '021-1234567',
+                  purpose: 'Interested in course enrollment',
+                  status: true,
+                  createdAt: '2025-04-14T10:00:00.000Z',
+                  updated_at: '2025-04-14T10:00:00.000Z',
+                },
+                {
+                  id: 2,
+                  fullName: 'Sara Khan',
+                  country: 'UAE',
+                  email: 'sara.khan@example.com',
+                  teamId: 'TEAM456',
+                  phoneNumber: '+971501234567',
+                  residenceNumber: '04-1234567',
+                  purpose: 'Looking for consultation',
+                  status: true,
+                  createdAt: '2025-04-13T09:30:00.000Z',
+                  updated_at: '2025-04-13T09:30:00.000Z',
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        status: 404,
+        description: 'No student leads found',
+        content: {
+          'application/json': {
+            example: {
+              status: 404,
+              message: 'Students Leads not found',
+            },
+          },
+        },
+      },
+      {
+        status: 500,
+        description: 'Internal Server Error',
+        content: {
+          'application/json': {
+            example: {
+              status: 500,
+              message: 'An unexpected error occurred.',
+            },
+          },
+        },
+      },
+    ],
+  },
+  leadById: {
+    summary: 'Get Student Lead by ID',
+    parameters: [
+      {
+        name: 'id',
+        in: 'path',
+        required: true,
+        description: 'ID of the student lead to retrieve',
+        schema: { type: 'integer', example: 1 },
+      },
+    ],
+    responsesArr: [
+      {
+        status: 200,
+        description: 'Successfully retrieved student lead',
+        content: {
+          'application/json': {
+            example: {
+              status: 200,
+              message: 'Students fetch successfully',
+              students: {
+                id: 1,
+                fullName: 'Ahmed Ali',
+                country: 'Pakistan',
+                email: 'ahmed.ali@example.com',
+                teamId: 'TEAM123',
+                phoneNumber: '+923001234567',
+                residenceNumber: '021-1234567',
+                purpose: 'Interested in course enrollment',
+                status: true,
+                createdAt: '2025-04-14T10:00:00.000Z',
+                updated_at: '2025-04-14T10:00:00.000Z',
+              },
+            },
+          },
+        },
+      },
+      {
+        status: 404,
+        description: 'Student lead not found',
+        content: {
+          'application/json': {
+            example: {
+              status: 404,
+              message: 'Student not found',
+            },
+          },
+        },
+      },
+      {
+        status: 500,
+        description: 'Internal Server Error',
+        content: {
+          'application/json': {
+            example: {
+              status: 500,
+              message: 'An unexpected error occurred.',
+            },
+          },
+        },
+      },
+    ],
+  },
+  registerTeacher: {
+    summary: 'Register a new teacher',
+    body: {
+      type: 'object',
+      properties: {
+        fullName: { type: 'string', example: 'Ayesha Khan' },
+        email: { type: 'string', example: 'ayesha.khan@example.com' },
+        teamsId: { type: 'string', example: 'TEAM456' },
+        phone: {
+          type: 'string',
+          example: '+923001234568',
+          description: 'Optional phone number, 10-15 digits',
+        },
+        courses: {
+          type: 'array',
+          items: { type: 'string', example: '101' },
+          example: ['101', '102'],
+          description: 'At least one course ID must be provided',
+        },
+        gender: {
+          type: 'string',
+          enum: ['male', 'female', 'other'],
+          example: 'female',
+        },
+        dob: {
+          type: 'string',
+          format: 'date',
+          example: '1990-05-10',
+        },
+        password: {
+          type: 'string',
+          example: 'Secure@123',
+          description:
+            'Must be at least 8 characters long and include uppercase, lowercase, and special character',
+        },
+      },
+      required: [
+        'fullName',
+        'email',
+        'teamsId',
+        'courses',
+        'gender',
+        'dob',
+        'password',
+      ],
+    },
+    requestBody: {
+      required: true,
+      content: {
+        'application/json': {
+          example: {
+            fullName: 'Ayesha Khan',
+            email: 'ayesha.khan@example.com',
+            teamsId: 'TEAM456',
+            phone: '+923001234568',
+            courses: ['101', '102'],
+            gender: 'female',
+            dob: '1990-05-10',
+            password: 'Secure@123',
+          },
+        },
+      },
+    },
+    responsesArr: [
+      {
+        status: 200,
+        description: 'Teacher registered successfully',
+        content: {
+          'application/json': {
+            example: {
+              status: 200,
+              message: 'Teacher registered successfully',
+            },
+          },
+        },
+      },
+      {
+        status: 400,
+        description: 'Bad request. Email or Teams ID already in use.',
+        content: {
+          'application/json': {
+            example: {
+              status: 400,
+              message: 'Email or Teams ID already in use',
+            },
+          },
+        },
+      },
+      {
+        status: 409,
+        description:
+          'Unique constraint violation (email or teamsId already exists)',
+        content: {
+          'application/json': {
+            example: {
+              status: 409,
+              message:
+                'A unique constraint violation occurred on field(s): email. Please check your input and try again.',
+            },
+          },
+        },
+      },
+      {
+        status: 500,
+        description: 'Internal Server Error',
+        content: {
+          'application/json': {
+            example: {
+              status: 500,
+              message:
+                'An error occurred. Please try again. Error: [error message]',
+            },
+          },
+        },
+      },
+    ],
+  },
+  
 };

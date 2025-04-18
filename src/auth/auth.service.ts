@@ -3,6 +3,7 @@ import {
   ConflictException,
   Inject,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
@@ -17,6 +18,8 @@ import {
 } from './dto';
 import { response } from 'src/common/types';
 import { OAuth2Client } from 'google-auth-library';
+import { generateIdentity } from 'src/common/decorators/generate-id';
+import { UpdateProfileDto } from 'src/teacher/dto';
 
 @Injectable()
 export class AuthService {
@@ -342,5 +345,26 @@ export class AuthService {
   async getUsers(): Promise<any> {
     const users = await this.Prisma.user.findMany();
     return { users };
+  }
+  async generateId(type:string): Promise<any> {
+    const identity = await generateIdentity(this.Prisma, type);
+    return {id:identity, message:'Id generated successfully'};
+  }
+  async updateProfile(id:number, dto:UpdateProfileDto): Promise<response> {
+    console.log(id, dto)
+    const existing = await this.Prisma.profile.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException('Profile not found');
+    const {id:Id, userId,  ...rest} = existing;
+    await this.Prisma.profile.update({
+      where: { id },
+      data: {
+        ...rest,
+        ...dto, // override only the fields provided in dto
+      },
+    })
+    return {
+      status: 200,
+      message: 'Profile updated successfully.',
+    };
   }
 }

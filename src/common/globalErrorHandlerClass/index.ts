@@ -14,8 +14,10 @@ export const apiWrapper = async <T>(
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
     ) {
+      const fields = error.meta?.target;
+      const fieldNames = Array.isArray(fields) ? fields.join(', ') : fields;
       throw new HttpException(
-        'A unique constraint violation occurred. Please check your input and try again.',
+        `A unique constraint violation occurred on field(s): ${fieldNames}. Please check your input and try again.`,
         HttpStatus.CONFLICT,
       );
     }

@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Res,
 } from '@nestjs/common';
@@ -23,6 +24,7 @@ import { getId } from 'src/common/decorators/getUserIdThroughToken.decorator';
 import { response } from 'src/common/types';
 import { Response } from 'express';
 import { ApiCustomResponse } from 'src/common/decorators/api-decorator';
+import { UpdateProfileDto } from 'src/teacher/dto';
 
 @Controller('auth')
 export class AuthController {
@@ -106,5 +108,21 @@ export class AuthController {
   @ApiCustomResponse('getUsers')
   getUers() {
     return apiWrapper(() => this.AuthService.getUsers());
+  }
+  @Public()
+  @Get('/generateId/:type')
+  @HttpCode(200)
+  // @ApiCustomResponse('getUsers')
+  generateId(@Param('type') type:string) {
+    return apiWrapper(() => this.AuthService.generateId(type));
+  }
+
+  @Patch('/profile/:id')
+  @HttpCode(200)
+  updateProfile(
+    @Param('id') id: string,
+    @Body() dto: UpdateProfileDto,
+  ) {
+    return this.AuthService.updateProfile(Number(id), dto);
   }
 }

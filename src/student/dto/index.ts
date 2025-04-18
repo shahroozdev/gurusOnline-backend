@@ -32,6 +32,9 @@ export class RegisterLeadDto {
   residenceNumber: string;
 
   @IsString()
+  @IsNotEmpty({ message: 'Prefered Timing is required' })
+  preferedTime: string;
+  @IsString()
   @IsNotEmpty({ message: 'Purpose of Learning is required' })
   purpose: string;
 }

@@ -53,28 +53,54 @@ model Profile {
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
-  avatar    String?
-  firstName String
-  lastName  String
-  dob       DateTime?
-  gender    String?
-  phone     String?
-  city      String?
-  state     String?
-  country   String?
-  address   String?
-  zip       String?
-  bio       String?
-  sign      String?
+  identity      String?
+  avatar        String?
+  fullname      String?
+  dob           DateTime?
+  gender        String?
+  phone         String?
+  city          String?
+  state         String?
+  country       String?
+  address       String?
+  zip           String?
+  bio           String?
+  sign          String?
+  teamsId       String?   @unique
+  averageRating Float?    @default(4.0)
 
+  availibility   Json?
   marital_status String?
   language       String?
   education      String?
+  certificate      String?
+  experience      String?
+  proficencyLevel      String?
+  teachingMethod      String?
 
-  userId Int  @unique
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  receivedRatings Rating[] @relation("ReceivedRatings")
+  givenRatings    Rating[] @relation("GivenRatings")
+  userId          Int      @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("profile")
+}
+
+model Rating {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  score   Int // for example 1 to 5
+  comment String?
+
+  // The user/profile who is receiving the rating
+  profileId Int
+  profile   Profile @relation("ReceivedRatings", fields: [profileId], references: [id], onDelete: Cascade)
+
+  // The user/profile who is giving the rating
+  ratedById Int
+  ratedBy   Profile @relation("GivenRatings", fields: [ratedById], references: [id], onDelete: Cascade)
 }
 
 model Course {
@@ -95,22 +121,36 @@ model Course {
 }
 
 model Session {
-  id           Int       @id @default(autoincrement())
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
-  deletedAt    DateTime? @map("deleted_at")
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
-  startDate    DateTime
-  endDate      DateTime
-  materials    String[]  // URLs to materials (images/docs)
-  meetingUrl   String?   // Optional MS Teams meeting link
-  isCompleted  Boolean   @default(false)
+  startDate   DateTime
+  endDate     DateTime
+  meetingUrl  String? // Optional MS Teams meeting link
+  isCompleted Boolean  @default(false)
 
   // Relations
+  materials    Material[] // One-to-many relationship
   enrollment   CourseEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
   enrollmentId Int
 
   @@map("sessions")
+}
+
+model Material {
+  id        Int     @id @default(autoincrement())
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId Int
+
+  fileUrl    String // The actual URL
+  fileName   String // E.g., "lesson-1.pdf"
+  fileSize   Int // In bytes
+  uploadedAt DateTime @default(now())
+  fileType   String // Optional: e.g., "pdf", "image", etc.
+
+  @@map("materials")
 }
 
 model CourseTeacher {
@@ -145,10 +185,29 @@ model CourseEnrollment {
   student   User          @relation("studentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)
   course    Course        @relation(fields: [courseId], references: [id])
   teacher   CourseTeacher @relation("teacherEnrollments", fields: [teacherId], references: [id], onDelete: Cascade)
-  sessions  Session[] 
+  sessions  Session[]
   sessionId Int?
 
   @@unique([studentId, courseId])
   @@index([teacherId, courseId])
   @@map("course_enrollments")
+}
+
+model StudentLeads {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  fullName        String
+  country         String
+  email           String  @unique
+  teamId          String  @unique
+  phoneNumber     String
+  residenceNumber String
+  purpose         String
+  preferedTime    String
+  status          Boolean @default(true)
+
+  @@map("student_leads")
 }

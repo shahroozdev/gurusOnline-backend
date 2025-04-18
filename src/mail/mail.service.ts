@@ -12,8 +12,28 @@ export class MailService {
       const res = await this.mailerService.sendMail({
         to: user.email,
         // from: '"Support Team" <support@example.com>', // override default from
-        subject: 'Welcome to Fb! Confirm your Email',
+        subject: 'Welcome to Guru is Online! Confirm your Email',
         template: './confirmation', // `.hbs` extension is appended automatically
+        context: {
+          // ✏️ filling curly brackets with content
+          name: user.fName,
+          url,
+        },
+      });
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
+  }
+
+  async sendUserWelcome(user: any) {
+    const url = process.env.BASE_URL+'/login'
+
+    try {
+      const res = await this.mailerService.sendMail({
+        to: user.email,
+        // from: '"Support Team" <support@example.com>', // override default from
+        subject: 'Welcome to Guru is Online!',
+        template: './welcome', // `.hbs` extension is appended automatically
         context: {
           // ✏️ filling curly brackets with content
           name: user.fName,
